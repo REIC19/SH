@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>新湖進領料</title>
+
+  <!-- 原生 APP 模式與主畫面設定 -->
+  <meta name="application-name" content="新湖進領料">
+  <meta name="apple-mobile-web-app-title" content="新湖進領料">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#216347">
+
+  <link id="appFavicon" rel="icon" type="image/png">
+  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180">
+  <link id="webManifestLink" rel="manifest">
+
+  <script>
+    (function initPwaIcon() {
+      function drawIcon(size) {
+        var canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext("2d");
+
+        var bg = ctx.createLinearGradient(0, 0, size, size);
+        bg.addColorStop(0, "#2d805c");
+        bg.addColorStop(0.55, "#216347");
+        bg.addColorStop(1, "#184733");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, size, size);
+
+        var pad = size * 0.07;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+        ctx.lineWidth = Math.max(2, size * 0.014);
+        ctx.beginPath();
+        ctx.roundRect(pad, pad, size - pad * 2, size - pad * 2, size * 0.18);
+        ctx.stroke();
+
+        var cx = size * 0.5, cy = size * 0.41;
+        var boxW = size * 0.25, boxH = size * 0.135, boxD = size * 0.15;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = Math.max(3, size * 0.032);
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - boxH);
+        ctx.lineTo(cx + boxW, cy);
+        ctx.lineTo(cx + boxW, cy + boxD);
+        ctx.lineTo(cx, cy + boxD + boxH);
+        ctx.lineTo(cx - boxW, cy + boxD);
+        ctx.lineTo(cx - boxW, cy);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.14)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(cx - boxW, cy);
+        ctx.lineTo(cx, cy + boxH);
+        ctx.lineTo(cx + boxW, cy);
+        ctx.moveTo(cx, cy + boxH);
+        ctx.lineTo(cx, cy + boxD + boxH);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f2c94c";
+        ctx.beginPath();
+        ctx.ellipse(cx + boxW * 0.88, cy - boxH * 0.85, size * 0.055, size * 0.03, -Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 " + Math.round(size * 0.19) + "px 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("新湖", cx, size * 0.77);
+
+        return canvas.toDataURL("image/png");
+      }
+
+      try {
+        var icon180 = drawIcon(180);
+        var icon512 = drawIcon(512);
+        document.getElementById("appFavicon").href = icon180;
+        document.getElementById("appleTouchIcon").href = icon180;
+
+        var manifest = {
+          name: "新湖 進貨/領料 系統",
+          short_name: "新湖進領料",
+          start_url: window.location.href,
+          display: "standalone",
+          background_color: "#216347",
+          theme_color: "#216347",
+          icons: [
+            { src: icon180, sizes: "180x180", type: "image/png" },
+            { src: icon512, sizes: "512x512", type: "image/png" }
+          ]
+        };
+        var blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+        document.getElementById("webManifestLink").href = URL.createObjectURL(blob);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #216347;
+    }
+    iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- 請將下方 src 換成您的 GAS 正式部署網址（結尾為 /exec） -->
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbwmPVy-p_j60QtWAgHTHKCOjnn7Hkg1X6aG4YywhJ3itFZLykeyjb1NCiD5dJQuxZSL/exec"
+    allow="camera; microphone; geolocation"
+    allowfullscreen>
+  </iframe>
+</body>
+</html>
