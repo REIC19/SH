@@ -40,20 +40,20 @@
           ctx.fillRect(0, 0, 180, 180);
 
           // 中心微弱翠綠光暈，凸顯端正白色字體
-          const centerGlow = ctx.createRadialGradient(90, 90, 10, 90, 90, 96);
+          const centerGlow = ctx.createRadialGradient(90, 90, 10, 90, 90, 98);
           centerGlow.addColorStop(0, "rgba(110, 231, 178, 0.16)");
           centerGlow.addColorStop(1, "rgba(11, 61, 36, 0)");
           ctx.fillStyle = centerGlow;
           ctx.fillRect(0, 0, 180, 180);
 
-          // 端正造型字體設定：不傾斜、大字級、深墨綠立體描邊與陰影
+          // 端正飽滿的造型字體設定：不傾斜、放大字級、深墨綠立體描邊與陰影
           const fontStack = '"PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Arial Black", sans-serif';
-          ctx.font = `900 70px ${fontStack}`;
+          ctx.font = `900 84px ${fontStack}`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
 
           ctx.lineJoin = "round";
-          ctx.lineWidth = 7;
+          ctx.lineWidth = 8;
           ctx.strokeStyle = "#072918";
           ctx.strokeText("新湖", 90, 95);
 
