@@ -107,8 +107,7 @@
     .outer-bottom-bar {
       flex-shrink: 0;
       width: 100%;
-      min-height: env(safe-area-inset-bottom, 0px);
-      height: env(safe-area-inset-bottom, 0px);
+      height: max(env(safe-area-inset-bottom, 0px), 14px);
       background: linear-gradient(135deg, #216347 0%, #2d805c 100%);
       transition: background 0.2s ease;
     }
@@ -150,14 +149,14 @@
       if (!data || data.type !== "XINHU_THEME_SYNC") return;
 
       if (data.solidColor) {
-        document.documentElement.style.backgroundColor = data.solidColor;
-        document.body.style.backgroundColor = data.solidColor;
+        document.documentElement.style.background = data.solidColor;
+        document.body.style.background = data.solidColor;
         const metaEl = document.getElementById("outerThemeColor");
         if (metaEl) metaEl.setAttribute("content", data.solidColor);
       }
       const bottomBar = document.getElementById("outerBottomBar");
-      if (bottomBar && data.gradient) {
-        bottomBar.style.background = data.gradient;
+      if (bottomBar) {
+        bottomBar.style.background = data.gradient || data.solidColor || "";
       }
     });
   </script>
