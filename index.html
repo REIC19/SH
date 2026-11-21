@@ -52,7 +52,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%;
-      height: 100%;
+      height: 100dvh;
       overflow: hidden;
       background-color: #216347;
       transition: background-color 0.2s ease;
@@ -107,6 +107,7 @@
     .outer-bottom-bar {
       flex-shrink: 0;
       width: 100%;
+      min-height: env(safe-area-inset-bottom, 0px);
       height: env(safe-area-inset-bottom, 0px);
       background: linear-gradient(135deg, #216347 0%, #2d805c 100%);
       transition: background 0.2s ease;
@@ -136,14 +137,15 @@
       if (mask) mask.classList.add("is-hidden");
     }
 
-    const ALLOWED_ORIGINS = [
-      "https://script.google.com",
-      "https://script.googleusercontent.com",
-      window.location.origin
-    ];
+    function isAllowedFrameOrigin(origin) {
+      if (!origin) return false;
+      if (origin === window.location.origin) return true;
+      if (origin === "https://script.google.com") return true;
+      return /^https:\/\/([a-zA-Z0-9-]+\.)*googleusercontent\.com$/.test(origin);
+    }
 
     window.addEventListener("message", function(event) {
-      if (!ALLOWED_ORIGINS.includes(event.origin)) return;
+      if (!isAllowedFrameOrigin(event.origin)) return;
       const data = event.data;
       if (!data || data.type !== "XINHU_THEME_SYNC") return;
 
