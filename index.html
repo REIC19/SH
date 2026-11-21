@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#216347">
+  <meta name="theme-color" id="outerThemeColor" content="#216347">
   <title>新湖 進貨/領料 系統(TEST)</title>
 
   <link rel="preconnect" href="https://script.google.com">
@@ -20,30 +20,86 @@
   <script>
     (function initOuterAppIcon() {
       try {
-        const canvas = document.createElement("canvas");
-        canvas.width = 180;
-        canvas.height = 180;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
+        function drawRoundedRectPath(ctx, x, y, w, h, r) {
+          if (typeof ctx.roundRect === "function") {
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, r);
+            return;
+          }
+          const radius = Math.min(r, w / 2, h / 2);
+          ctx.beginPath();
+          ctx.moveTo(x + radius, y);
+          ctx.arcTo(x + w, y, x + w, y + h, radius);
+          ctx.arcTo(x + w, y + h, x, y + h, radius);
+          ctx.arcTo(x, y + h, x, y, radius);
+          ctx.arcTo(x, y, x + w, y, radius);
+          ctx.closePath();
+        }
 
-        const bgGrad = ctx.createLinearGradient(0, 0, 180, 180);
-        bgGrad.addColorStop(0, "#2d805c");
-        bgGrad.addColorStop(0.55, "#216347");
-        bgGrad.addColorStop(1, "#184733");
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, 180, 180);
+        function createStyledIcon(size) {
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return "";
 
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "900 42px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("新湖", 90, 95);
+          const s = size / 180;
+          ctx.save();
+          ctx.scale(s, s);
 
-        const icon180 = canvas.toDataURL("image/png");
-        ["appFavicon", "appleTouchIcon"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.href = icon180;
-        });
+          // 背景深綠漸層
+          const bgGrad = ctx.createLinearGradient(0, 0, 180, 180);
+          bgGrad.addColorStop(0, "#2f9468");
+          bgGrad.addColorStop(0.55, "#216347");
+          bgGrad.addColorStop(1, "#133a29");
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, 180, 180);
+
+          // 右上角微光暈
+          const glowGrad = ctx.createRadialGradient(142, 34, 6, 142, 34, 85);
+          glowGrad.addColorStop(0, "rgba(167, 243, 208, 0.34)");
+          glowGrad.addColorStop(1, "rgba(167, 243, 208, 0)");
+          ctx.fillStyle = glowGrad;
+          ctx.fillRect(0, 0, 180, 180);
+
+          // 中央徽章框
+          ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+          ctx.lineWidth = 2;
+          drawRoundedRectPath(ctx, 22, 34, 136, 112, 26);
+          ctx.fill();
+          ctx.stroke();
+
+          // 上方小標誌字樣
+          ctx.fillStyle = "rgba(220, 252, 231, 0.9)";
+          ctx.font = "700 16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("進領料管理", 90, 58);
+
+          // 主標題「新湖」
+          ctx.save();
+          ctx.shadowColor = "rgba(0, 0, 0, 0.28)";
+          ctx.shadowBlur = 8;
+          ctx.shadowOffsetY = 3;
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "900 50px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("新湖", 90, 104);
+          ctx.restore();
+
+          ctx.restore();
+          return canvas.toDataURL("image/png");
+        }
+
+        const icon180 = createStyledIcon(180);
+        const icon512 = createStyledIcon(512);
+
+        const favEl = document.getElementById("appFavicon");
+        const appleEl = document.getElementById("appleTouchIcon");
+        if (favEl && icon512) favEl.href = icon512;
+        if (appleEl && icon180) appleEl.href = icon180;
       } catch (e) {}
     })();
   </script>
@@ -108,8 +164,9 @@
     .outer-bottom-bar {
       flex-shrink: 0;
       width: 100%;
-      height: env(safe-area-inset-bottom, 0px);
+      height: max(env(safe-area-inset-bottom, 0px), 18px);
       background: linear-gradient(135deg, #216347 0%, #2d805c 100%);
+      transition: background 0.15s ease, background-color 0.15s ease;
     }
   </style>
 </head>
@@ -135,6 +192,33 @@
       const mask = document.getElementById("loadingMask");
       if (mask) mask.classList.add("is-hidden");
     }
+
+    function applyThemeToOuter(data) {
+      if (!data) return;
+      const solid = data.solidColor || "#216347";
+      const grad = data.gradient || solid;
+
+      document.documentElement.style.background = solid;
+      document.documentElement.style.backgroundColor = solid;
+      document.body.style.background = solid;
+      document.body.style.backgroundColor = solid;
+
+      const metaEl = document.getElementById("outerThemeColor");
+      if (metaEl) metaEl.setAttribute("content", solid);
+
+      const bottomBar = document.getElementById("outerBottomBar");
+      if (bottomBar) {
+        bottomBar.style.background = "none";
+        bottomBar.style.backgroundColor = solid;
+        bottomBar.style.backgroundImage = grad.includes("gradient") ? grad : "none";
+      }
+    }
+
+    window.addEventListener("message", function(event) {
+      const data = event.data;
+      if (!data || data.type !== "XINHU_THEME_SYNC") return;
+      applyThemeToOuter(data);
+    });
   </script>
 </body>
 </html>
