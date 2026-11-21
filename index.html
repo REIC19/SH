@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" id="outerThemeColor" content="#216347">
+  <meta name="theme-color" content="#216347">
   <title>新湖 進貨/領料 系統(TEST)</title>
 
   <link rel="preconnect" href="https://script.google.com">
@@ -52,10 +52,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%;
-      height: 100dvh;
+      height: 100%;
+      min-height: 100dvh;
       overflow: hidden;
       background-color: #216347;
-      transition: background-color 0.2s ease;
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
     .shell-frame {
@@ -64,6 +64,7 @@
       flex-direction: column;
       width: 100%;
       height: 100%;
+      min-height: 100dvh;
     }
     .gas-iframe {
       flex: 1 1 auto;
@@ -107,9 +108,8 @@
     .outer-bottom-bar {
       flex-shrink: 0;
       width: 100%;
-      height: max(env(safe-area-inset-bottom, 0px), 14px);
+      height: env(safe-area-inset-bottom, 0px);
       background: linear-gradient(135deg, #216347 0%, #2d805c 100%);
-      transition: background 0.2s ease;
     }
   </style>
 </head>
@@ -135,30 +135,6 @@
       const mask = document.getElementById("loadingMask");
       if (mask) mask.classList.add("is-hidden");
     }
-
-    function isAllowedFrameOrigin(origin) {
-      if (!origin) return false;
-      if (origin === window.location.origin) return true;
-      if (origin === "https://script.google.com") return true;
-      return /^https:\/\/([a-zA-Z0-9-]+\.)*googleusercontent\.com$/.test(origin);
-    }
-
-    window.addEventListener("message", function(event) {
-      if (!isAllowedFrameOrigin(event.origin)) return;
-      const data = event.data;
-      if (!data || data.type !== "XINHU_THEME_SYNC") return;
-
-      if (data.solidColor) {
-        document.documentElement.style.background = data.solidColor;
-        document.body.style.background = data.solidColor;
-        const metaEl = document.getElementById("outerThemeColor");
-        if (metaEl) metaEl.setAttribute("content", data.solidColor);
-      }
-      const bottomBar = document.getElementById("outerBottomBar");
-      if (bottomBar) {
-        bottomBar.style.background = data.gradient || data.solidColor || "";
-      }
-    });
   </script>
 </body>
 </html>
