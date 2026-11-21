@@ -20,22 +20,6 @@
   <script>
     (function initOuterAppIcon() {
       try {
-        function drawRoundedRectPath(ctx, x, y, w, h, r) {
-          if (typeof ctx.roundRect === "function") {
-            ctx.beginPath();
-            ctx.roundRect(x, y, w, h, r);
-            return;
-          }
-          const radius = Math.min(r, w / 2, h / 2);
-          ctx.beginPath();
-          ctx.moveTo(x + radius, y);
-          ctx.arcTo(x + w, y, x + w, y + h, radius);
-          ctx.arcTo(x + w, y + h, x, y + h, radius);
-          ctx.arcTo(x, y + h, x, y, radius);
-          ctx.arcTo(x, y, x + w, y, radius);
-          ctx.closePath();
-        }
-
         function createStyledIcon(size) {
           const canvas = document.createElement("canvas");
           canvas.width = size;
@@ -47,47 +31,43 @@
           ctx.save();
           ctx.scale(s, s);
 
-          // 背景深綠漸層
-          const bgGrad = ctx.createLinearGradient(0, 0, 180, 180);
-          bgGrad.addColorStop(0, "#2f9468");
-          bgGrad.addColorStop(0.55, "#216347");
-          bgGrad.addColorStop(1, "#133a29");
+          // 明亮草綠與薄荷綠漸層底色
+          const bgGrad = ctx.createLinearGradient(20, 10, 165, 175);
+          bgGrad.addColorStop(0, "#4ce096");
+          bgGrad.addColorStop(0.5, "#24b866");
+          bgGrad.addColorStop(1, "#128748");
           ctx.fillStyle = bgGrad;
           ctx.fillRect(0, 0, 180, 180);
 
-          // 右上角微光暈
-          const glowGrad = ctx.createRadialGradient(142, 34, 6, 142, 34, 85);
-          glowGrad.addColorStop(0, "rgba(167, 243, 208, 0.34)");
-          glowGrad.addColorStop(1, "rgba(167, 243, 208, 0)");
-          ctx.fillStyle = glowGrad;
+          // 中心薄荷亮光，提亮「新湖」字體周圍
+          const centerGlow = ctx.createRadialGradient(90, 86, 10, 90, 90, 98);
+          centerGlow.addColorStop(0, "rgba(209, 250, 229, 0.34)");
+          centerGlow.addColorStop(1, "rgba(18, 135, 72, 0)");
+          ctx.fillStyle = centerGlow;
           ctx.fillRect(0, 0, 180, 180);
 
-          // 中央徽章框
-          ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
-          ctx.lineWidth = 2;
-          drawRoundedRectPath(ctx, 22, 34, 136, 112, 26);
-          ctx.fill();
-          ctx.stroke();
-
-          // 上方小標誌字樣
-          ctx.fillStyle = "rgba(220, 252, 231, 0.9)";
-          ctx.font = "700 16px sans-serif";
+          // 造型字體設定：超大粗體、微傾斜、深綠立體描邊與陰影
+          const fontStack = '"Arial Black", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+          ctx.font = `900 68px ${fontStack}`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText("進領料管理", 90, 58);
 
-          // 主標題「新湖」
-          ctx.save();
-          ctx.shadowColor = "rgba(0, 0, 0, 0.28)";
-          ctx.shadowBlur = 8;
-          ctx.shadowOffsetY = 3;
+          ctx.translate(90, 93);
+          ctx.rotate(-0.03);
+
+          ctx.lineJoin = "round";
+          ctx.lineWidth = 7;
+          ctx.strokeStyle = "#0b522c";
+          ctx.strokeText("新湖", 0, 2);
+
+          ctx.shadowColor = "rgba(8, 56, 30, 0.45)";
+          ctx.shadowBlur = 10;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 5;
+
+          // 白色主字體
           ctx.fillStyle = "#ffffff";
-          ctx.font = "900 50px sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("新湖", 90, 104);
-          ctx.restore();
+          ctx.fillText("新湖", 0, 0);
 
           ctx.restore();
           return canvas.toDataURL("image/png");
